@@ -4,6 +4,12 @@ LocalRoots Water Watch is a fork-friendly, open-source starter for local flood a
 
 The goal is simple: a community in another district or province should be able to fork the project, change one main config file, connect verified local sources, and run its own dashboard on Cloudflare Workers.
 
+## Fork guide (PDF)
+
+Open [`README.pdf`](README.pdf) for the practical step-by-step guide: Fork the repository, change the area, add local water gauges, add public CCTV/snapshot sources, verify, preview and deploy.
+
+The editable source for the PDF is `docs/FORK-GUIDE.html`. `README.pdf` is generated from that source so the guide can stay in sync.
+
 ## Principles
 
 - Source first: every displayed metric links back to its original source.
