@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readPath, formatFreshness } from '../src/fetchers.js';
-import { renderDashboard, esc } from '../src/render.js';
+import { renderDashboard, esc, CORE_DONATION } from '../src/render.js';
 
 test('readPath reads object and array paths', () => {
   assert.equal(readPath({ stations: [{ level: 4.2 }] }, 'stations.0.level'), 4.2);
@@ -20,4 +20,12 @@ test('dashboard includes source and disclaimer', () => {
   assert.match(html, /LocalRoots Water Watch/);
   assert.match(html, /Official warnings take priority/);
   assert.match(html, /https:\/\/example\.com/);
+});
+
+test('core keeps original LocalRoots Lightning donation', () => {
+  assert.equal(CORE_DONATION.lightningAddress, 'donate@zapm.uk');
+  const html = renderDashboard({title:'Forked Water Watch',area:'Another province',theme:{subtitle:'Test'},disclaimer:'Test',cameras:[],links:[]},[]);
+  assert.match(html, /donate@zapm\.uk/);
+  assert.match(html, /lightning:donate@zapm\.uk/);
+  assert.match(html, /data-copy-donation="donate@zapm\.uk"/);
 });
