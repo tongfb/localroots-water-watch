@@ -30,6 +30,12 @@ For a verified JSON endpoint, configure the endpoint plus `valuePath` and option
 
 API keys can be injected from Cloudflare secrets via `apiKeyEnv`; the secret itself must never be committed.
 
+## Support the original project
+
+The public core includes an original-project donation block for `donate@zapm.uk`, with both an Open Lightning action and a Copy address fallback. It is intentionally part of the core rather than the locality config, so normal province or district customization does not remove the original LocalRoots support point by accident.
+
+Fork maintainers can add their own local support channel separately if they wish. The MIT license does not make donations mandatory.
+
 ## Deploy
 
 `wrangler.jsonc` intentionally contains no Cloudflare Account ID, production hostname or another operator's Worker names. A fork owner should configure deployment for their own Cloudflare account.
