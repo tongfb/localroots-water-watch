@@ -1,0 +1,54 @@
+name: Build Fork Guide PDF
+
+on:
+  push:
+    paths:
+      - 'docs/FORK-GUIDE.html'
+      - '.github/workflows/build-fork-guide-pdf.yml'
+  pull_request:
+    paths:
+      - 'docs/FORK-GUIDE.html'
+      - '.github/workflows/build-fork-guide-pdf.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-pdf:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install PDF renderer and fonts
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fonts-noto-core fonts-dejavu-core libpango-1.0-0 libpangoft2-1.0-0
+          python -m pip install --upgrade weasyprint
+
+      - name: Build README.pdf
+        run: weasyprint docs/FORK-GUIDE.html README.pdf
+
+      - name: Verify generated PDF
+        run: |
+          test -s README.pdf
+          python - <<'PY'
+          from pathlib import Path
+          data = Path('README.pdf').read_bytes()
+          assert data.startswith(b'%PDF-'), 'README.pdf is not a PDF'
+          assert len(data) > 10000, 'README.pdf is unexpectedly small'
+          print(f'README.pdf OK: {len(data)} bytes')
+          PY
+
+      - name: Commit generated PDF on main
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add README.pdf
+          if git diff --cached --quiet; then
+            echo 'README.pdf already up to date'
+          else
+            git commit -m 'Build README.pdf [skip ci]'
+            git push
+          fi
