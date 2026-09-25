@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<title>LocalRoots Water Watch - คู่มือ Fork</title>
+<style>
+@page { size: A4; margin: 15mm 16mm 16mm; @bottom-center { content: "LocalRoots Water Watch - Fork Guide"; font: 8pt "Noto Sans Thai"; color:#60766f; } }
+:root { font-family:"Noto Sans Thai",sans-serif; color:#1f322d; font-size:10.5pt; line-height:1.45; }
+body { margin:0; }
+h1,h2,h3 { color:#0f766e; margin:0 0 8px; }
+h1 { font-size:28pt; line-height:1.1; }
+h2 { font-size:18pt; margin-top:16px; }
+h3 { font-size:12.5pt; color:#173f36; margin-top:14px; }
+p { margin:5px 0 8px; }
+ul,ol { margin:6px 0 10px 22px; padding:0; }
+li { margin:4px 0; }
+code,pre { font-family:"DejaVu Sans Mono",monospace; }
+pre { background:#f3f6f5; border:1px solid #d9e4e0; border-radius:6px; padding:10px; font-size:8.2pt; line-height:1.28; white-space:pre-wrap; overflow-wrap:anywhere; }
+.note { background:#fff8db; border:1px solid #eadb94; padding:9px 11px; border-radius:7px; margin:10px 0; }
+.note.green { background:#eaf5f1; border-color:#cfe5dd; }
+.cover { text-align:center; padding-top:28mm; }
+.cover .subtitle { font-size:19pt; font-weight:700; color:#173f36; }
+.cover .flow { margin-top:12px; color:#526b64; }
+.cover .repo { margin:18px 0; font-weight:700; color:#0f766e; }
+.page { break-before:page; }
+table { width:100%; border-collapse:collapse; margin:9px 0 12px; font-size:9pt; }
+th,td { border:1px solid #96aaa4; padding:5px 6px; vertical-align:top; }
+th { background:#ddeee9; text-align:left; }
+.check { list-style:none; margin-left:0; }
+.check li::before { content:"☐"; margin-right:9px; }
+.footerbox { text-align:center; margin-top:28px; }
+a { color:#0f766e; text-decoration:none; }
+.small { font-size:9pt; color:#60766f; }
+</style>
+</head>
+<body>
+<section class="cover">
+<h1>LocalRoots Water Watch</h1>
+<div class="subtitle">คู่มือ Fork ไปใช้กับพื้นที่ของคุณ</div>
+<div class="flow">เปิด repo - Fork - แก้ config - ใส่จุดวัดน้ำ/กล้อง - ทดสอบ - Deploy</div>
+<div class="repo">https://github.com/tongfb/localroots-water-watch</div>
+<div class="note"><b>ต้องมีอะไรบ้าง</b> GitHub account, Cloudflare account, Node.js และเครื่องที่เปิด Terminal/PowerShell ได้</div>
+<h2 style="text-align:left">ทำตามนี้ก่อน</h2>
+<ul style="text-align:left">
+<li>Fork repository ไปที่ GitHub account ของคุณ</li>
+<li>แก้ <code>config/localroots.config.json</code> ให้เป็นชื่อพื้นที่ของคุณ</li>
+<li>ใส่จุดวัดน้ำที่มี JSON API ที่ตรวจสอบแล้ว</li>
+<li>ใส่กล้องสาธารณะที่อนุญาตให้เปิดดู/นำภาพมาใช้ได้</li>
+<li>รัน <code>npm install</code> และ <code>npm run verify</code></li>
+<li>เปิดดูด้วย <code>npm run dev</code></li>
+<li>เมื่อข้อมูลถูกต้องแล้วจึง <code>npm run deploy</code></li>
+</ul>
+<div class="note green" style="text-align:left"><b>หลักสำคัญ</b> ทุกตัวเลขควรมี <code>sourceUrl</code> และเวลาของข้อมูลเมื่อแหล่งต้นทางมีให้ อย่าตั้ง threshold เตือนภัยเองถ้าหน่วยงานต้นทางไม่ได้ประกาศนิยามไว้</div>
+</section>
+
+<section class="page">
+<h2>1. Fork repository</h2>
+<p>เข้า repo แล้วกด <b>Fork</b> จากหน้า GitHub จากนั้นเลือก account ของคุณให้ GitHub สร้างสำเนาโครงการใหม่</p>
+<pre>https://github.com/tongfb/localroots-water-watch</pre>
+<p>Clone repo ที่ fork มาไว้ในเครื่องของคุณ เช่น</p>
+<pre>git clone https://github.com/YOUR-GITHUB-NAME/localroots-water-watch.git
+cd localroots-water-watch</pre>
+<div class="note"><b>อย่าแก้ของต้นฉบับ</b> ทำงานใน repo ที่ fork ไปแล้ว เพื่อให้คุณดูแลข้อมูลพื้นที่ของตัวเองและดึงอัปเดตจากต้นฉบับได้ง่าย</div>
+
+<h2>2. เปลี่ยนชื่อและข้อมูลพื้นที่</h2>
+<p>เปิดไฟล์ <code>config/localroots.config.json</code> แล้วเปลี่ยนค่าพื้นฐานให้เป็นพื้นที่ของคุณ</p>
+<pre>{
+  "project": "my-area-water-watch",
+  "title": "My Area Water Watch",
+  "area": "อำเภอ/จังหวัดของคุณ",
+  "timezone": "Asia/Bangkok",
+  "refreshSeconds": 300,
+  "theme": {
+    "accent": "#0f766e",
+    "subtitle": "ข้อมูลน้ำและสถานการณ์พื้นที่ของเรา"
+  },
+  "disclaimer": "โปรดยึดประกาศเตือนภัยและคำสั่งจากหน่วยงานทางการเป็นหลักเมื่อมีเหตุฉุกเฉิน"
+}</pre>
+<p>แก้เฉพาะค่าของพื้นที่ ไม่ต้องแก้ core ถ้ายังไม่จำเป็น</p>
+</section>
+
+<section class="page">
+<h2>3. เพิ่มจุดวัดน้ำของพื้นที่</h2>
+<p>แต่ละจุดวัดน้ำเพิ่มใน array ชื่อ <code>jsonMetrics</code> โดย core จะอ่าน JSON จาก URL แล้วหยิบค่าตาม <code>valuePath</code> และ <code>timePath</code></p>
+<pre>"jsonMetrics": [
+  {
+    "id": "river-main",
+    "group": "ระดับน้ำ",
+    "label": "สถานีหน้าตลาด",
+    "url": "https://example.go.th/api/station/ABC123",
+    "valuePath": "data.0.level",
+    "timePath": "data.0.observed_at",
+    "unit": "m",
+    "sourceUrl": "https://example.go.th/stations/ABC123",
+    "note": "ระดับน้ำจากสถานี ABC123"
+  }
+]</pre>
+<h3>แต่ละช่องหมายถึงอะไร</h3>
+<table>
+<tr><th>ช่อง</th><th>ใส่อะไร</th></tr>
+<tr><td><code>id</code></td><td>ชื่อภายในระบบ ควรไม่ซ้ำ เช่น river-main, canal-east</td></tr>
+<tr><td><code>group</code></td><td>กลุ่มที่จะแสดง เช่น ระดับน้ำ, ฝน, อ่างเก็บน้ำ</td></tr>
+<tr><td><code>label</code></td><td>ชื่อที่คนในพื้นที่เข้าใจทันที</td></tr>
+<tr><td><code>url</code></td><td>URL ของ JSON API ที่ Worker จะเรียก</td></tr>
+<tr><td><code>valuePath</code></td><td>ตำแหน่งค่าที่ต้องการใน JSON เช่น data.0.level</td></tr>
+<tr><td><code>timePath</code></td><td>ตำแหน่งเวลาที่ข้อมูลถูกวัด เช่น data.0.observed_at</td></tr>
+<tr><td><code>unit</code></td><td>หน่วย เช่น m, cm, mm</td></tr>
+<tr><td><code>sourceUrl</code></td><td>หน้าต้นทางสำหรับให้คนกดตรวจสอบ</td></tr>
+<tr><td><code>note</code></td><td>คำอธิบาย datum/สถานี/บริบทที่จำเป็น</td></tr>
+</table>
+<h3>valuePath อ่านยังไง</h3>
+<pre>{
+  "data": [
+    { "level": 4.25, "observed_at": "2026-09-25T13:00:00+07:00" }
+  ]
+}</pre>
+<p>ตัวอย่างนี้ใช้ <code>valuePath = data.0.level</code> และ <code>timePath = data.0.observed_at</code> โดยเลข 0 หมายถึงรายการแรกใน array data</p>
+<div class="note"><b>สำคัญ</b> <code>jsonMetrics</code> ต้องเป็น endpoint ที่คืน JSON จริง ถ้ามีแค่หน้าเว็บ HTML หรือแอปที่ดูด้วยตา ให้ใส่เป็น <code>links</code> ไปก่อน หรือทำ adapter เพิ่มภายหลัง</div>
+</section>
+
+<section class="page">
+<h2>4. เพิ่มหลายสถานี</h2>
+<p>ถ้ามีหลายจุดวัดน้ำ ให้เพิ่ม object ต่อกันใน <code>jsonMetrics</code> และคั่นด้วย comma</p>
+<pre>"jsonMetrics": [
+  {
+    "id": "river-upstream",
+    "group": "ระดับน้ำ",
+    "label": "สถานีต้นน้ำ",
+    "url": "https://example.go.th/api/A01",
+    "valuePath": "data.level",
+    "timePath": "data.time",
+    "unit": "m",
+    "sourceUrl": "https://example.go.th/A01"
+  },
+  {
+    "id": "river-town",
+    "group": "ระดับน้ำ",
+    "label": "สถานีในเมือง",
+    "url": "https://example.go.th/api/A02",
+    "valuePath": "data.level",
+    "timePath": "data.time",
+    "unit": "m",
+    "sourceUrl": "https://example.go.th/A02"
+  }
+]</pre>
+<div class="note"><b>เลือกสถานีให้มีความหมาย</b> เลือกจุดที่ช่วยอธิบายการไหลของน้ำเข้าพื้นที่ จุดกลางพื้นที่ และจุดปลายน้ำ/ทางระบาย ถ้าพื้นที่ของคุณมีโครงสร้างแบบนั้น</div>
+<h3>ถ้า API ต้องใช้ key</h3>
+<pre>{
+  "apiKeyEnv": "LOCAL_WATER_API_KEY",
+  "apiKeyQueryParam": "api_key"
+}</pre>
+<p>ถ้า API ต้องส่ง key ทาง header ให้ใช้ <code>apiKeyHeader</code> แทน <code>apiKeyQueryParam</code> และเก็บค่าจริงเป็น Cloudflare secret</p>
+
+<h2>5. เพิ่มกล้องของพื้นที่</h2>
+<p>Public Core รุ่นนี้รองรับภาพ snapshot และลิงก์ไปหน้าต้นทาง เพิ่มใน array <code>cameras</code></p>
+<pre>"cameras": [
+  {
+    "label": "กล้องสะพานกลางเมือง",
+    "imageUrl": "https://example.go.th/camera/bridge.jpg",
+    "pageUrl": "https://example.go.th/camera/bridge",
+    "alt": "ภาพกล้องสะพานกลางเมือง",
+    "note": "ใช้ดูระดับน้ำและสภาพการจราจรบริเวณสะพาน"
+  }
+]</pre>
+<p>ถ้ามีหน้าดูกล้อง แต่ไม่มี URL ภาพ snapshot ที่ใช้ได้โดยตรง ให้ตัด <code>imageUrl</code> ออกและคง <code>pageUrl</code> ไว้ ระบบยังแสดงการ์ดพร้อมลิงก์ไปต้นทางได้</p>
+<div class="note"><b>สิทธิ์การใช้งาน</b> ใช้เฉพาะกล้องหรือภาพที่หน่วยงานอนุญาตให้สาธารณะเปิดดู/นำไปแสดงต่อได้ หากไม่แน่ใจให้ลิงก์ไปหน้าต้นทางแทนการดึงภาพมาแสดงเอง</div>
+</section>
+
+<section class="page">
+<h2>6. เพิ่มลิงก์สำคัญของพื้นที่</h2>
+<p>แหล่งข้อมูลที่ไม่มี JSON API หรือเป็นหน้าอ้างอิงสำคัญ ให้ใส่ใน <code>links</code></p>
+<pre>"links": [
+  {
+    "label": "ศูนย์เตือนภัยจังหวัด",
+    "url": "https://example.go.th/warning",
+    "note": "ประกาศเตือนภัยทางการ"
+  },
+  {
+    "label": "เรดาร์ฝนพื้นที่",
+    "url": "https://example.go.th/radar",
+    "note": "ใช้ประกอบการติดตามฝน"
+  }
+]</pre>
+<h3>เช็กรอบแรกก่อนทดสอบ</h3>
+<ul>
+<li>ชื่อพื้นที่และ subtitle ถูกต้อง</li>
+<li>ทุก <code>jsonMetrics</code> เปิด URL ได้และคืน JSON</li>
+<li><code>valuePath</code> อ่านค่าที่ต้องการจริง</li>
+<li><code>timePath</code> เป็นเวลาที่ parse ได้ ถ้าแหล่งข้อมูลมีเวลา</li>
+<li><code>sourceUrl</code> กดแล้วพาคนไปดูต้นทางจริง</li>
+<li>กล้องทุกตัวเปิดได้ และไม่ละเมิดเงื่อนไขของต้นทาง</li>
+<li>ไม่มี API key, token หรือ secret ถูกเขียนลง config/repo</li>
+</ul>
+<h2>7. ติดตั้งและทดสอบ</h2>
+<pre>npm install
+npm run verify
+npm run dev</pre>
+<p>เมื่อ <code>npm run dev</code> ทำงาน ให้เปิด URL local ที่ Wrangler แสดง แล้วตรวจว่าชื่อพื้นที่ จุดวัดน้ำ freshness source link และกล้องแสดงถูกต้อง</p>
+<div class="note"><b>ถ้า verify ไม่ผ่าน</b> แก้ error ให้หมดก่อน deploy โดยเฉพาะ JSON syntax เช่น comma เกิน/ขาด หรือ quote ไม่ครบ</div>
+<h2>8. Deploy ไป Cloudflare</h2>
+<pre>npx wrangler login
+npm run deploy</pre>
+<p>ครั้งแรก Wrangler จะให้ยืนยัน Cloudflare account ผ่าน browser จากนั้น <code>npm run deploy</code> จะใช้คำสั่ง <code>wrangler deploy</code> ของโปรเจกต์</p>
+<div class="note"><b>อย่าคัดลอกค่าของคนอื่น</b> อย่าเอา Account ID, API token, domain, Worker name หรือ secret ของผู้ดูแลคนอื่นมาใช้กับ fork ของคุณ</div>
+</section>
+
+<section class="page">
+<h2 style="text-align:center;font-size:22pt">ก่อนแจก URL ให้คนในพื้นที่</h2>
+<ul class="check">
+<li>หน้าเว็บระบุชื่อพื้นที่ถูก</li>
+<li>จุดวัดน้ำมาจากแหล่งต้นทางที่ตรวจสอบได้</li>
+<li>ค่าตัวเลขตรงกับ source</li>
+<li>เวลาข้อมูล/freshness แสดงสมเหตุผล</li>
+<li>ไม่ได้สร้างเกณฑ์เตือนภัยขึ้นเองโดยไม่มีนิยามจากหน่วยงาน</li>
+<li>กล้องเปิดได้และมีสิทธิ์ให้สาธารณะดู</li>
+<li>ไม่มี secret อยู่ใน GitHub</li>
+<li><code>npm run verify</code> ผ่าน</li>
+<li>เปิด Worker URL หลัง deploy แล้วทดสอบอีกครั้ง</li>
+</ul>
+<div class="note green"><b>ถ้าแหล่งข้อมูลใหม่ไม่ตรงกับ core</b> อย่าฝืนแก้หลายจุดในระบบ ให้ทำ adapter แยกสำหรับแหล่งข้อมูลนั้น หรือเปิด issue/PR กลับมาที่ LocalRoots Water Watch เพื่อให้ pattern ใหม่สามารถนำกลับไปใช้กับพื้นที่อื่นได้</div>
+<div class="footerbox">
+<h3>LocalRoots Water Watch - MIT License</h3>
+<p><b>Support the original project via Lightning: donate@zapm.uk</b></p>
+<p class="small">https://github.com/tongfb/localroots-water-watch</p>
+</div>
+</section>
+</body>
+</html>
