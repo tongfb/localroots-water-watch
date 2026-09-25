@@ -1,0 +1,31 @@
+{
+  "project": "localroots-water-watch",
+  "title": "LocalRoots Water Watch",
+  "area": "ตั้งชื่อพื้นที่ของคุณที่นี่",
+  "timezone": "Asia/Bangkok",
+  "refreshSeconds": 300,
+  "theme": {
+    "accent": "#0f766e",
+    "subtitle": "ข้อมูลน้ำและสถานการณ์พื้นที่จากแหล่งต้นทางที่ตรวจสอบย้อนกลับได้"
+  },
+  "disclaimer": "ข้อมูลนี้เป็นแดชบอร์ดชุมชนเพื่อช่วยติดตามสถานการณ์ โปรดยึดประกาศเตือนภัยและคำสั่งจากหน่วยงานทางการเป็นหลักเมื่อมีเหตุฉุกเฉิน",
+  "jsonMetrics": [],
+  "cameras": [],
+  "links": [
+    {
+      "label": "สถานการณ์น้ำประเทศไทย",
+      "url": "https://nationalthaiwater.onwr.go.th/",
+      "note": "ศูนย์รวมข้อมูลน้ำระดับประเทศ"
+    },
+    {
+      "label": "กรมอุตุนิยมวิทยา",
+      "url": "https://www.tmd.go.th/",
+      "note": "พยากรณ์อากาศและประกาศเตือนภัย"
+    },
+    {
+      "label": "GISTDA Disaster Platform",
+      "url": "https://disaster.gistda.or.th/",
+      "note": "ข้อมูลภูมิสารสนเทศและพื้นที่ภัยพิบัติ"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "name": "localroots-water-watch",
+  "version": "0.1.0",
+  "description": "Fork-friendly public flood and water situation dashboard starter for local communities.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "verify": "node --test && node --check src/worker.js && node --check src/render.js && node --check src/fetchers.js && node --check scripts/validate-config.mjs",
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "4.138.0"
+  }
+}
